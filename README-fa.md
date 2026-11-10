@@ -15,7 +15,7 @@ mcp-name: io.github.mohammad-abbasi-sh/secretcv-mcp
   "mcpServers": {
     "secretcv": {
       "command": "uvx",
-      "args": ["secretcv-mcp"]
+      "args": ["secretcv-mcp==0.1.0"]
     }
   }
 }
@@ -40,9 +40,9 @@ secretcv.com آگهی‌ها را کاملاً سمت سرور رندر می‌�
 ## نصب
 
 ```bash
-uvx secretcv-mcp        # اجرای مستقیم (نیازمند uv)
+uvx secretcv-mcp==0.1.0        # اجرای مستقیم (نیازمند uv)
 # یا
-pip install secretcv-mcp
+pip install secretcv-mcp==0.1.0
 secretcv-mcp    # سرور MCP را روی stdio راه می‌اندازد
 ```
 
