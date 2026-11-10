@@ -15,7 +15,7 @@ Add to your MCP client config (stdio):
   "mcpServers": {
     "secretcv": {
       "command": "uvx",
-      "args": ["secretcv-mcp"]
+      "args": ["secretcv-mcp==0.1.0"]
     }
   }
 }
@@ -59,9 +59,9 @@ secretcv.com serves its listings fully server-rendered — no login, no API key,
 ## Install
 
 ```bash
-uvx secretcv-mcp        # run directly (needs uv)
+uvx secretcv-mcp==0.1.0        # run directly (needs uv)
 # or
-pip install secretcv-mcp
+pip install secretcv-mcp==0.1.0
 secretcv-mcp    # starts the MCP server on stdio
 ```
 
