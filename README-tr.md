@@ -15,7 +15,7 @@ MCP istemci yapılandırmanıza ekleyin (stdio):
   "mcpServers": {
     "secretcv": {
       "command": "uvx",
-      "args": ["secretcv-mcp==0.1.0"]
+      "args": ["secretcv-mcp==0.1.1"]
     }
   }
 }
@@ -40,9 +40,9 @@ secretcv.com ilanlarını tamamen sunucu taraflı gösterir — giriş, API anah
 ## Kurulum
 
 ```bash
-uvx secretcv-mcp==0.1.0        # doğrudan çalıştır (uv gerekir)
+uvx secretcv-mcp==0.1.1        # doğrudan çalıştır (uv gerekir)
 # veya
-pip install secretcv-mcp==0.1.0
+pip install secretcv-mcp==0.1.1
 secretcv-mcp    # MCP sunucusunu stdio üzerinde başlatır
 ```
 
