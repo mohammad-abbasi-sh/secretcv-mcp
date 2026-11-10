@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "secretcv-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Unofficial read-only MCP server for secretcv.com jobs (search, detail, sectors, cities)"
 readme = "README.md"
 license = { text = "MIT" }
