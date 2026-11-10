@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 
 from mcp.server.fastmcp import FastMCP
 
@@ -30,8 +31,24 @@ factory.\
 """
 
 
+_SOURCE = "secretcv.com"
+_DISCLAIMER = "Unofficial read-only data from secretcv.com; verify on the site before acting on it."
+
+
+def _envelope() -> dict:
+    return {
+        "fetched_at": datetime.now(timezone.utc).isoformat(),
+        "source": _SOURCE,
+        "disclaimer": _DISCLAIMER,
+    }
+
+
+def _ok(payload: dict) -> str:
+    return json.dumps({**_envelope(), **payload}, ensure_ascii=False)
+
+
 def _err(e: Exception) -> str:
-    return json.dumps({"error": str(e)}, ensure_ascii=False)
+    return _ok({"error": str(e)})
 
 
 def _validate_limit(limit: int, lo: int = 1, hi: int = 20) -> int:
@@ -65,16 +82,13 @@ def secretcv_search_jobs(query: str | None = None, city: str | None = None,
         data = _J.parse_listing(html_text)
     except (ValueError, _http.SecretcvError) as e:
         return _err(e)
-    return json.dumps(
-        {
+    return _ok({
             "query": q or None,
             "city": c or None,
             "total": data["total"],
             "count": min(limit, len(data["jobs"])),
             "jobs": data["jobs"][:limit],
-        },
-        ensure_ascii=False,
-    )
+        })
 
 
 @mcp.tool()
@@ -89,14 +103,11 @@ def secretcv_latest_jobs(limit: int = 10) -> str:
         data = _J.parse_listing(html_text)
     except (ValueError, _http.SecretcvError) as e:
         return _err(e)
-    return json.dumps(
-        {
+    return _ok({
             "total": data["total"],
             "count": min(limit, len(data["jobs"])),
             "jobs": data["jobs"][:limit],
-        },
-        ensure_ascii=False,
-    )
+        })
 
 
 @mcp.tool()
@@ -114,7 +125,7 @@ def secretcv_get_job(job_url: str) -> str:
         data = _J.parse_job_detail(html_text)
     except (ValueError, _http.SecretcvError) as e:
         return _err(e)
-    return json.dumps(data, ensure_ascii=False)
+    return _ok(data)
 
 
 @mcp.tool()
@@ -130,10 +141,7 @@ def secretcv_list_sectors(limit: int = 20) -> str:
         rows = _J.parse_sectors(html_text)
     except (ValueError, _http.SecretcvError) as e:
         return _err(e)
-    return json.dumps(
-        {"count": min(limit, len(rows)), "sectors": rows[:limit]},
-        ensure_ascii=False,
-    )
+    return _ok({"count": min(limit, len(rows)), "sectors": rows[:limit]})
 
 
 @mcp.tool()
@@ -148,10 +156,17 @@ def secretcv_list_cities(limit: int = 20) -> str:
         rows = _J.complete_cities(_J.parse_cities(html_text))
     except (ValueError, _http.SecretcvError) as e:
         return _err(e)
-    return json.dumps(
-        {"count": min(limit, len(rows)), "cities": rows[:limit]},
-        ensure_ascii=False,
-    )
+    return _ok({"count": min(limit, len(rows)), "cities": rows[:limit]})
+
+
+@mcp.tool()
+def secretcv_health() -> str:
+    """Check whether secretcv.com is reachable right now.
+
+    Returns status ok (HTTP 200), blocked (HTTP 403/429 — bot wall or
+    rate limit) or error, plus the HTTP status and the probed URL.
+    One polite request; it does not fetch any listings."""
+    return _ok(_http.health_check())
 
 
 def main() -> None:
